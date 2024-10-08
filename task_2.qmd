@@ -1,0 +1,105 @@
+---
+title: "Task2"
+author: "Dola Anna"
+date: "08/10/2024"
+format:
+  html:
+    embed-resources: true
+editor: source
+---
+
+## Question 1
+
+Question description
+1. Create the next random vector:
+```{r}
+# Generate a random vector of 50 elements
+v <- rnorm(50)
+
+# Print the 10th item
+print("10th item:")
+print(v[10])
+
+# Print items from the 10th to the 20th (including 20th item)
+print("Items from 10th to 20th (including 20th item):")
+print(v[10:20])
+
+# Print 10 items starting from the 5th
+print("10 items starting from 5th:")
+print(v[5:(5+9)])  # 5th to 14th item
+
+# Print all items bigger than 0
+print("Items bigger than 0:")
+print(v[v > 0])
+
+# Print the last 5 items
+print("Last 5 items:")
+print(tail(v, 5))
+
+```
+
+## Question 2 
+
+Question description
+2.Create the next data frame:
+```{r}
+# Creating the data frame
+df <- data.frame(
+  a = rnorm(50), 
+  b = 1:50, 
+  cc = sample(letters, 50, replace = TRUE)
+)
+
+# 1. Finding and printing the last 10 rows of the data frame
+last_10_rows <- tail(df, 10)
+print("Last 10 rows of the data frame:")
+print(last_10_rows)
+
+# 2. Finding and printing the 15th item of column `cc`
+item_15_cc <- df$cc[15]
+print("15th item of column 'cc':")
+print(item_15_cc)
+
+# 3. Subsetting columns `a` and `b` and rows from 10th to 20th (including 20th)
+subset_ab <- df[10:20, c("a", "b")]
+print("Subset of columns 'a' and 'b' from rows 10th to 20th:")
+print(subset_ab)
+
+# 4. Creating a new vector from column `b`
+new_vector_b <- df$b
+print("New vector created from column 'b':")
+print(new_vector_b)
+
+```
+
+
+## Question 3
+Question description
+3.Create the next random vector:
+```{r}
+# Create the random vector
+set.seed(123)  # Set seed for reproducibility (optional)
+v_na <- rnorm(30)          # Generate 30 random values from a normal distribution
+num_na <- sample(10, 1)    # Randomly select the number of NA values
+v_na[sample(30, num_na)] <- NA  # Assign NA to random positions in the vector
+
+# 1. Print all non-NA items
+non_na_items <- v_na[!is.na(v_na)]
+print("Non-NA items in the vector:")
+print(non_na_items)
+
+# 2. Find how many NA values the vector has
+num_na_values <- sum(is.na(v_na))
+print(paste("Number of NA values in the vector:", num_na_values))
+
+# 3. Find the minimum, maximum, and mean of the vector (excluding NA values)
+min_value <- min(v_na, na.rm = TRUE)
+max_value <- max(v_na, na.rm = TRUE)
+mean_value <- mean(v_na, na.rm = TRUE)
+
+print(paste("Minimum value (excluding NA):", min_value))
+print(paste("Maximum value (excluding NA):", max_value))
+print(paste("Mean value (excluding NA):", mean_value))
+
+```
+
