@@ -1,0 +1,120 @@
+---
+title: "Task4"
+author: "Dola Anna"
+date: "26/11/2024"
+format:
+  html:
+    embed-resources: true
+editor: source
+---
+
+```{r}
+# Load necessary libraries
+library(stringr)
+library(dplyr)
+library(readr)
+```
+
+```{r}
+# Function to extract city name and day type from file name
+extract_name_day_type <- function(file_path) {
+  file_path |> 
+    basename() |>
+    tools::file_path_sans_ext() |> 
+    str_split_1("_")
+}
+```
+
+```{r}
+# Function to explore a single city's Airbnb data
+explore_city <- function(file_path) {
+  # Read the data
+  data <- read_csv(file_path, show_col_types = FALSE)
+  
+  # Extract city name and day type
+  name_day_type <- extract_name_day_type(file_path)
+  city_name <- name_day_type[1]
+  day_type <- name_day_type[2]
+  
+  # Create a summary data frame
+  summary <-
+    tibble(
+      city_name = city_name,
+      day_type = day_type,
+      n_rows = nrow(data),
+      min_price = min(data$realSum, na.rm = TRUE),
+      avg_price = mean(data$realSum, na.rm = TRUE),
+      max_price = max(data$realSum, na.rm = TRUE),
+      avg_satisfaction = mean(data$guest_satisfaction_overall, na.rm = TRUE)
+    )
+  
+  return(summary)
+}
+
+explore_city("../data/airbnb/paris_weekdays.csv")
+```
+
+```{r}
+# Function to prepare the entire dataset
+prepare_dataset <- function(folder_path) {
+  # Get list of all CSV files in the folder
+  file_list <- list.files(folder_path, pattern = "*.csv", full.names = TRUE)
+  
+  # Initialize an empty list to store data frames
+  data_list <- list()
+  
+  for (file in file_list) {
+    # Read each file
+    data <- read_csv(file, show_col_types = FALSE)
+    
+    # Extract city name and day type
+    name_day_type <- extract_name_day_type(file)
+    data <- data %>%
+      mutate(
+        city = name_day_type[1],
+        day_type = name_day_type[2]
+      )
+    
+    # Append the data frame to the list
+    data_list[[length(data_list) + 1]] <- data
+  }
+  
+  # Merge all data frames into one
+  merged_data <- bind_rows(data_list)
+  
+  # Save the merged dataset as CSV
+  write_csv(merged_data, "airbnb.csv")
+}
+```
+
+```{r}
+# Function to perform t-test between two cities
+t.test_cities <- function(city1, city2, merged_data) {
+  # Filter data for the two cities
+  data_city1 <- merged_data %>% filter(city == city1)
+  data_city2 <- merged_data %>% filter(city == city2)
+  
+  # Perform t-test on `realSum` column
+  test_result <- t.test(data_city1$realSum, data_city2$realSum, var.equal = FALSE)
+  
+  return(test_result)
+}
+
+# Example usage:
+# Assuming the dataset is in the "/data/airbnb/" directory
+# folder_path <- "/data/airbnb"
+
+# Explore a single city's data
+# file_path <- "/data/airbnb/amsterdam_weekdays.csv"
+# explore_city(file_path)
+
+# Prepare the dataset
+# merged_data <- prepare_dataset(folder_path)
+
+# Perform t-test between two cities
+# t_test_result <- t.test_cities("amsterdam", "paris", merged_data)
+# print(t_test_result)
+
+```
+
+
